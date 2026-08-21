@@ -2,24 +2,26 @@ using System.Reflection;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositories;
-
-public class RepositoryContext : DbContext
+namespace Repositories
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<Event> Events { get; set; }
 
-    public RepositoryContext(DbContextOptions<RepositoryContext> options)
-        : base(options)
+    public class RepositoryContext : DbContext
     {
-    }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Event> Events { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+        public RepositoryContext(DbContextOptions<RepositoryContext> options)
+            : base(options)
+        {
+        }
 
-        modelBuilder.ApplyConfigurationsFromAssembly(
-            Assembly.GetExecutingAssembly()
-        );
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                Assembly.GetExecutingAssembly()
+            );
+        }
     }
 }

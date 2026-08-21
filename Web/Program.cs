@@ -3,6 +3,7 @@ using Web.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureDbContext(builder.Configuration);
+builder.Services.ConfigureRepositoryRegistration();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
