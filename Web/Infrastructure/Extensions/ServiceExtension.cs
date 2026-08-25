@@ -26,11 +26,15 @@ namespace Web.Infrastructure.Extensions
             services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
 
-        public static void ConfigureServiceRegistration(this IServiceCollection services)
+        public static void ConfigureServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IServiceManager, ServiceManager>();
+
+            services.AddScoped<IEncryptionService>(provider =>
+            new EncryptionService(configuration["EncryptionKey"]
+            ?? throw new InvalidOperationException("Encryption key bulunamadı.")));
         }
     }
 }

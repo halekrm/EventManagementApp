@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.ConfigureRepositoryRegistration();
-builder.Services.ConfigureServiceRegistration();
+builder.Services.ConfigureServiceRegistration(builder.Configuration);
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
