@@ -1,0 +1,41 @@
+@model IEnumerable<Entities.Models.Event>
+
+@{
+    ViewData["Title"] = "Etkinlik Yönetimi";
+}
+
+<h2>Etkinlik Yönetimi</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Yeni Etkinlik Oluştur</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Görsel</th>
+            <th>Başlık</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Oluşturan Kullanıcı</th>
+            <th>Oluşturulma Tarihi</th>
+            <th>Aktiflik</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var eventEntity in Model)
+        {
+            <tr>
+                <td><img src="@eventEntity.ImagePath" alt="@eventEntity.Title" style="width:100px; height:auto;" /></td>
+                <td>@eventEntity.Title</td>
+                <td>@eventEntity.StartDateTime</td>
+                <td>@eventEntity.EndDateTime</td>
+                <td>@eventEntity.CreatedByUser.FirstName @eventEntity.CreatedByUser.LastName</td>
+                <td>@eventEntity.CreatedAt</td>
+                <td>@(eventEntity.IsActive ? "Aktif" : "Pasif")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@eventEntity.EventId" class="btn btn-warning btn-sm">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,60 @@
+@model Web.Models.EventFormViewModel
+
+@{
+    ViewData["Title"] = "Yeni Etkinlik";
+}
+
+<h2>Yeni Etkinlik Oluştur</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Başlık</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartDateTime" class="form-label">Başlangıç Tarihi</label>
+        <input asp-for="StartDateTime" type="datetime-local" class="form-control" />
+        <span asp-validation-for="StartDateTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EndDateTime" class="form-label">Bitiş Tarihi</label>
+        <input asp-for="EndDateTime" type="datetime-local" class="form-control" />
+        <span asp-validation-for="EndDateTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Image" class="form-label">Etkinlik Görseli</label>
+        <input asp-for="Image" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ShortDescription" class="form-label">Kısa Açıklama</label>
+        <textarea asp-for="ShortDescription" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LongDescription" class="form-label">Detaylı Açıklama</label>
+        <textarea asp-for="LongDescription" class="form-control" rows="6"></textarea>
+        <span asp-validation-for="LongDescription" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

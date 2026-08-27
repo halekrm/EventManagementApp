@@ -1,3 +1,4 @@
+using Entities.Dtos;
 using Entities.Models;
 
 namespace Services.Contracts
@@ -9,6 +10,7 @@ namespace Services.Contracts
         IEnumerable<Event> GetLatestEvents(int count, bool trackChanges);
         Event? GetEventById(int id, bool trackChanges);
         void CreateEvent(Event eventEntity);
+        void CreateEvent(EventDto eventDto, int userId);
         void UpdateEvent(Event eventEntity);
         void DeleteEvent(int id);
         bool UserHasEventWithTitle(

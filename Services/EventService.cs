@@ -1,4 +1,6 @@
+using Entities.Dtos;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
 using Services.Contracts;
 
@@ -17,6 +19,8 @@ namespace Services
         {
             return _repositoryManager.Event
                     .FindAll(trackChanges)
+                    .Include(eventEntity => eventEntity.CreatedByUser)
+                    .OrderByDescending(eventEntity => eventEntity.CreatedAt)
                     .ToList();
         }
 
@@ -26,7 +30,22 @@ namespace Services
                     .FindByCondition(eventEntity => eventEntity.EventId == id, trackChanges)
                     .SingleOrDefault();
         }
+        public void CreateEvent(EventDto eventDto, int userId)
+        {
+            var eventEntity = new Event
+            {
+                CreatedByUserId = userId,
+                Title = eventDto.Title,
+                StartDateTime = eventDto.StartDateTime,
+                EndDateTime = eventDto.EndDateTime,
+                ImagePath = eventDto.ImagePath,
+                ShortDescription = eventDto.ShortDescription,
+                LongDescription = eventDto.LongDescription,
+                IsActive = eventDto.IsActive
+            };
 
+            CreateEvent(eventEntity);
+        }
         public void CreateEvent(Event eventEntity)
         {
             ValidateEventDates(eventEntity);
@@ -98,5 +117,7 @@ namespace Services
             .Take(count)
             .ToList();
         }
+
+
     }
 }
