@@ -103,7 +103,7 @@ namespace Services
         {
             return _repositoryManager.Event.FindByCondition(eventEntity =>
                    eventEntity.IsActive &&
-                   eventEntity.EndDateTime >= DateTime.Now, trackChanges)
+                   eventEntity.StartDateTime >= DateTime.Now, trackChanges)
                    .OrderByDescending(eventEntity => eventEntity.CreatedAt)
                    .ToList();
         }
@@ -112,12 +112,10 @@ namespace Services
         {
             return _repositoryManager.Event.FindByCondition(eventEntity =>
             eventEntity.IsActive &&
-            eventEntity.EndDateTime >= DateTime.Now, trackChanges)
+            eventEntity.StartDateTime >= DateTime.Now, trackChanges)
             .OrderByDescending(eventEntity => eventEntity.CreatedAt)
             .Take(count)
             .ToList();
         }
-
-
     }
 }

@@ -1,0 +1,41 @@
+@model IEnumerable<Entities.Models.Event>
+
+@{
+    ViewData["Title"] = "Etkinlikler";
+}
+
+<h2>Etkinlikler</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Görüntülenecek aktif etkinlik bulunmamaktadır.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var eventEntity in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@eventEntity.ImagePath" class="card-img-top" alt="@eventEntity.Title"
+                         style="height:200px; object-fit:cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@eventEntity.Title</h5>
+                        <p class="card-text">@eventEntity.ShortDescription</p>
+                        <p><strong>Başlangıç:</strong> @eventEntity.StartDateTime.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p><strong>Bitiş:</strong> @eventEntity.EndDateTime.ToString("dd.MM.yyyy HH:mm")</p>
+
+                        <a asp-action="Details" asp-route-id="@eventEntity.EventId" class="btn btn-primary">
+                            Detayları Gör
+                        </a>
+
+                        <a asp-controller="PublicEvent" asp-action="Calendar" class="btn btn-outline-secondary">
+                            Takvim Görünümü
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

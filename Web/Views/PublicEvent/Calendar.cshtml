@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Etkinlik Takvimi";
+}
+
+<h2>Etkinlik Takvimi</h2>
+
+<a asp-action="Index" class="btn btn-secondary mb-3">Etkinlik Listesine Dön</a>
+
+<div id="calendar"></div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarElement = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarElement,
+            {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                events: '@Url.Action("CalendarEvents", "PublicEvent")',
+                eventClick: function (info) 
+                {
+                    if (info.event.url) 
+                    {
+                        info.jsEvent.preventDefault();
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+}

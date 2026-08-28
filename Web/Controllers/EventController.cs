@@ -230,5 +230,44 @@ namespace Web.Controllers
                 return View(model);
             }
         }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var eventEntity = _eventService.GetEventById(id, false);
+
+            if (eventEntity is null)
+            {
+                return NotFound();
+            }
+
+            string imagePath = eventEntity.ImagePath;
+
+            try
+            {
+                _eventService.DeleteEvent(id);
+
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    string relativePath = imagePath.TrimStart('/');
+
+                    string fullPath = Path.Combine(_environment.WebRootPath, relativePath.Replace('/', Path.DirectorySeparatorChar));
+
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+
+                return RedirectToAction("Index");
+            }
+
+            catch (InvalidOperationException exception)
+            {
+                TempData["ErrorMessage"] = exception.Message;
+
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

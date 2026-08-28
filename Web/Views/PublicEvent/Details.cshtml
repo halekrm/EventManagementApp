@@ -1,0 +1,41 @@
+@model Web.Models.PublicEventDetailViewModel
+
+@{
+    ViewData["Title"] = "Etkinlik Detayı";
+}
+
+<h2>@Model.Event.Title</h2>
+
+<img src="@Model.Event.ImagePath" alt="@Model.Event.Title" class="img-fluid mb-3"
+     style="max-height:400px; object-fit:cover;" />
+
+<p><strong>Başlangıç:</strong> @Model.Event.StartDateTime.ToString("dd.MM.yyyy HH:mm")</p>
+<p><strong>Bitiş:</strong> @Model.Event.EndDateTime.ToString("dd.MM.yyyy HH:mm")</p>
+
+<div class="mb-4">
+    @Html.Raw(Model.Event.LongDescription)
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mb-4">Etkinlik Listesine Dön</a>
+
+<hr />
+
+<h4>Son Etkinlikler</h4>
+
+<div class="row">
+    @foreach (var eventEntity in Model.LatestEvents)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <img src="@eventEntity.ImagePath" class="card-img-top" alt="@eventEntity.Title"
+                     style="height:150px; object-fit:cover;" />
+                <div class="card-body">
+                    <h6 class="card-title">@eventEntity.Title</h6>
+                    <p class="card-text">@eventEntity.StartDateTime.ToString("dd.MM.yyyy HH:mm")</p>
+                    <a asp-action="Details" asp-route-id="@eventEntity.EventId"
+                       class="btn btn-outline-primary btn-sm">Detaya Git</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
