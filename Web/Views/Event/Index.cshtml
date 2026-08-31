@@ -32,7 +32,11 @@
         {
             <tr>
                 <td><img src="@eventEntity.ImagePath" alt="@eventEntity.Title" style="width:100px; height:auto;" /></td>
-                <td>@eventEntity.Title</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@eventEntity.EventId" class="text-decoration-none">
+                        @eventEntity.Title
+                    </a>
+                </td>
                 <td>@eventEntity.StartDateTime.ToString("dd.MM.yyyy HH:mm")</td>
                 <td>@eventEntity.EndDateTime.ToString("dd.MM.yyyy HH:mm")</td>
                 <td>@eventEntity.CreatedByUser.FirstName @eventEntity.CreatedByUser.LastName</td>

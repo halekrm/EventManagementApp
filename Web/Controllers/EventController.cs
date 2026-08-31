@@ -29,7 +29,24 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var now = DateTime.Now;
+
+            var startDateTime = new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                now.Hour,
+                now.Minute,
+                0);
+                
+            var model = new EventFormViewModel
+            {
+                StartDateTime = startDateTime,
+                EndDateTime = DateTime.Now.AddHours(1),
+                IsActive = true
+            };
+
+            return View("EventForm", model);
         }
 
         [HttpPost]
@@ -44,7 +61,7 @@ namespace Web.Controllers
             {
                 ModelState.AddModelError("Image", "Etkinlik görseli zorunludur.");
 
-                return View(model);
+                return View("EventForm", model);
             }
 
             string extension = Path.GetExtension(model.Image.FileName).ToLower();
@@ -60,14 +77,14 @@ namespace Web.Controllers
             {
                 ModelState.AddModelError("Image", "Sadece JPG, JPEG veya PNG dosyaları yüklenebilir.");
 
-                return View(model);
+                return View("EventForm", model);
             }
 
             if (model.Image.Length > 2 * 1024 * 1024)
             {
                 ModelState.AddModelError("Image", "Görsel boyutu en fazla 2 MB olabilir.");
 
-                return View(model);
+                return View("EventForm", model);
             }
 
             string fileName = Guid.NewGuid().ToString() + extension;
@@ -116,7 +133,7 @@ namespace Web.Controllers
             {
                 ModelState.AddModelError(string.Empty, exception.Message);
 
-                return View(model);
+                return View("EventForm", model);
             }
         }
 
@@ -141,7 +158,7 @@ namespace Web.Controllers
                 IsActive = eventEntity.IsActive
             };
 
-            return View(model);
+            return View("EventForm", model);
         }
 
         [HttpPost]
@@ -149,7 +166,7 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("EventForm", model);
             }
 
             var eventEntity = _eventService.GetEventById(model.EventId, false);
@@ -160,6 +177,7 @@ namespace Web.Controllers
             }
 
             string imagePath = eventEntity.ImagePath;
+            string oldImagePath = eventEntity.ImagePath;
 
             if (model.Image is not null)
             {
@@ -176,14 +194,14 @@ namespace Web.Controllers
                 {
                     ModelState.AddModelError("Image", "Sadece JPG, JPEG veya PNG dosyaları yüklenebilir.");
 
-                    return View(model);
+                    return View("EventForm", model);
                 }
 
                 if (model.Image.Length > 2 * 1024 * 1024)
                 {
                     ModelState.AddModelError("Image", "Görsel boyutu en fazla 2 MB olabilir.");
 
-                    return View(model);
+                    return View("EventForm", model);
                 }
 
                 string fileName = Guid.NewGuid().ToString() + extension;
@@ -200,6 +218,18 @@ namespace Web.Controllers
                 }
 
                 imagePath = "/images/events/" + fileName;
+
+                if (!string.IsNullOrEmpty(oldImagePath))
+                {
+                    string relativeOldPath = oldImagePath.TrimStart('/');
+
+                    string fullOldPath = Path.Combine(_environment.WebRootPath, relativeOldPath.Replace('/', Path.DirectorySeparatorChar));
+
+                    if (System.IO.File.Exists(fullOldPath))
+                    {
+                        System.IO.File.Delete(fullOldPath);
+                    }
+                }
             }
 
             var updatedEvent = new Entities.Models.Event
@@ -227,7 +257,7 @@ namespace Web.Controllers
             {
                 ModelState.AddModelError(string.Empty, exception.Message);
 
-                return View(model);
+                return View("EventForm", model);
             }
         }
 

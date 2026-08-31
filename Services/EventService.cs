@@ -20,7 +20,7 @@ namespace Services
             return _repositoryManager.Event
                     .FindAll(trackChanges)
                     .Include(eventEntity => eventEntity.CreatedByUser)
-                    .OrderByDescending(eventEntity => eventEntity.CreatedAt)
+                    .OrderBy(eventEntity => eventEntity.StartDateTime)
                     .ToList();
         }
 
