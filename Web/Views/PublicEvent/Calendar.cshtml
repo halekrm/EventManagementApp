@@ -2,11 +2,19 @@
     ViewData["Title"] = "Etkinlik Takvimi";
 }
 
-<h2>Etkinlik Takvimi</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Etkinlik Takvimi</h2>
+        <p class="text-muted mb-0">Yaklaşan etkinlikleri aylık takvim görünümünde inceleyebilirsiniz.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Etkinlik Listesine Dön</a>
+</div>
 
-<a asp-action="Index" class="btn btn-secondary mb-3">Etkinlik Listesine Dön</a>
-
-<div id="calendar"></div>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div id="calendar"></div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
@@ -14,61 +22,42 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        var calendarElement = document.getElementById('calendar');
+            var calendarElement = document.getElementById('calendar');
 
-        var calendar = new FullCalendar.Calendar(calendarElement, {
-        initialView: 'dayGridMonth',
+            var calendar = new FullCalendar.Calendar(calendarElement, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                buttonText: {
+                    today: 'Bugün',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün'
+                },
+                buttonHints: {
+                    prev: 'Önceki Ay',
+                    next: 'Sonraki Ay',
+                    today: 'Bugün'
+                },
+                height: 'auto',
+                events: '@Url.Action("CalendarEvents", "PublicEvent")',
+                eventContent: function (info) {
+                    var start = info.event.start ? info.event.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '';
+                    var end = info.event.end ? info.event.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '';
+                    var text = (start && end ? start + ' - ' + end + ' ' : '') + info.event.title;
 
-        locale: 'tr',
+                    return {
+                        html: '<div>' + text + '</div>'
+                    };
+                },
+                eventClick: function (info) {
+                    if (info.event.url) {
+                        info.jsEvent.preventDefault();
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
 
-        buttonText: {
-        today: 'Bugün',
-        month: 'Ay',
-        week: 'Hafta',
-        day: 'Gün',
-        },
-
-        buttonHints: {
-        prev: 'Önceki Ay',
-        next: 'Sonraki Ay',
-        today: 'Bugün'
-        },
-
-        events: '@Url.Action("CalendarEvents", "PublicEvent")',
-
-        eventContent: function (info) {
-        var start = '';
-        var end = '';
-
-        if (info.event.start) {
-        start = info.event.start.toLocaleTimeString('tr-TR', {
-        hour: '2-digit',
-        minute: '2-digit'
-        });
-        }
-
-        if (info.event.end) {
-        end = info.event.end.toLocaleTimeString('tr-TR', {
-        hour: '2-digit',
-        minute: '2-digit'
-        });
-        }
-
-        var text = start + ' - ' + end + ' ' + info.event.title;
-
-        return {
-        html: '<div>' + text + '</div>'
-        };
-        },
-        eventClick: function (info) {
-        if (info.event.url) {
-        info.jsEvent.preventDefault();
-        window.location.href = info.event.url;
-        }
-        }
-        });
-
-        calendar.render();
+            calendar.render();
         });
     </script>
 }

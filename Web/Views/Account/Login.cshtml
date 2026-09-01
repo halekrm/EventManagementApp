@@ -4,38 +4,48 @@
     ViewData["Title"] = "Giriş Yap";
 }
 
-<h2>Giriş Yap</h2>
+<div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 180px);">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
 
-@if (TempData["SuccessMessage"] is not null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
+                <div class="text-center mb-4">
+                    <h2 class="mb-2">Giriş Yap</h2>
+                    <p class="text-muted mb-0">Hesabınıza giriş yaparak etkinliklerinizi yönetebilirsiniz.</p>
+                </div>
+
+                @if (TempData["SuccessMessage"] is not null)
+                {
+                    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                }
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-posta</label>
+                        <input asp-for="Email" class="form-control" placeholder="E-posta adresi" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label">Şifre</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="********" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Giriş Yap</button>
+
+                    <div class="text-center">
+                        <span class="text-muted">Hesabınız yok mu?</span>
+                        <a asp-action="Register" class="text-decoration-none">Kayıt Ol</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
     </div>
-}
-
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label">E-posta</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label">Şifre</label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Giriş Yap
-    </button>
-
-    <a asp-action="Register" class="btn btn-link">
-        Kayıt Ol
-    </a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

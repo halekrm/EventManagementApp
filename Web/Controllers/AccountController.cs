@@ -93,7 +93,7 @@ namespace Web.Controllers
 
             await HttpContext.SignInAsync("CookieAuth", principal);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "PublicEvent");
 
         }
         [HttpPost]
