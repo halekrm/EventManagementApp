@@ -24,11 +24,11 @@
         <h4 class="mb-3">Son Etkinlikler</h4>
         @foreach (var eventEntity in Model.LatestEvents)
         {
-            <div class="card mb-3 shadow-sm">
+            <div class="card mb-3 shadow-sm latest-event-card">
                 <div class="card-body">
                     <h6 class="card-title">@eventEntity.Title</h6>
                     <p class="small mb-2">@eventEntity.StartDateTime.ToString("dd.MM.yyyy HH:mm")</p>
-                    <a asp-controller="PublicEvent" asp-action="Details" asp-route-id="@eventEntity.EventId" class="btn btn-sm btn-outline-primary">Detayları Gör</a>
+                    <a asp-controller="PublicEvent" asp-action="Details" asp-route-id="@eventEntity.EventId" class="btn btn-sm latest-event-button">Detayları Gör</a>
                 </div>
             </div>
         }

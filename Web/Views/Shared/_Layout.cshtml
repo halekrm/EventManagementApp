@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm custom-navbar border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-controller="PublicEvent" asp-action="Index">Etkinlik Yönetim Uygulaması</a>
 
@@ -34,10 +34,11 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Event" asp-action="Index">Etkinlik Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
+                            </li>
+                            
+                            <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile">Profil</a>
-                                </li>
+                            </li>
                             }
                         </ul>
 
@@ -45,11 +46,11 @@
                             @if (User.Identity?.IsAuthenticated == true)
                             {
                                 <li class="nav-item d-flex align-items-center me-3">
-                                    <span class="navbar-text">@User.Identity.Name</span>
+                                    <span class="navbar-text user-name">@User.Identity.Name</span>
                                 </li>
                                 <li class="nav-item">
                                     <form asp-controller="Account" asp-action="Logout" method="post">
-                                        <button type="submit" class="btn btn-link nav-link text-dark">Çıkış Yap</button>
+                                        <button type="submit" class="btn btn-link nav-link logout-link">Çıkış Yap</button>
                                     </form>
                                 </li>
                             }
@@ -75,9 +76,10 @@
 
         <footer class="border-top footer text-muted">
             <div class="container">
-                &copy; 2026 - Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2026 Etkinlik Yönetim Uygulaması
             </div>
         </footer>
+
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
