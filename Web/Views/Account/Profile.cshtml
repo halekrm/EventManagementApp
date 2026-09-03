@@ -45,7 +45,7 @@
 
                     <div class="mb-3">
                         <label asp-for="BirthDate" class="form-label">Doğum Tarihi</label>
-                        <input asp-for="BirthDate" type="date" class="form-control" />
+                        <input asp-for="BirthDate" type="date" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")"/>
                         <span asp-validation-for="BirthDate" class="text-danger"></span>
                     </div>
 

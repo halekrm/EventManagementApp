@@ -38,7 +38,7 @@ namespace Web.Controllers
                 now.Hour,
                 now.Minute,
                 0);
-                
+
             var model = new EventFormViewModel
             {
                 StartDateTime = startDateTime,
@@ -54,7 +54,7 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("EventForm", model);
             }
 
             if (model.Image is null)
@@ -87,6 +87,24 @@ namespace Web.Controllers
                 return View("EventForm", model);
             }
 
+            string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            if (string.IsNullOrEmpty(userIdValue))
+            {
+                return RedirectToAction("Login", "Account");
+
+            }
+
+            int userId = int.Parse(userIdValue);
+
+            if (_eventService.UserHasEventWithTitle(userId, model.Title))
+            {
+                ModelState.AddModelError("Title", "Bu isimde bir etkinliğiniz zaten var. Lütfen başlığı değiştirin.");
+
+                return View("EventForm", model);
+            }
+
             string fileName = Guid.NewGuid().ToString() + extension;
 
             string uploadFolder = Path.Combine(_environment.WebRootPath, "images", "events");
@@ -100,17 +118,6 @@ namespace Web.Controllers
             {
                 await model.Image.CopyToAsync(stream);
             }
-
-            string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-
-            if (string.IsNullOrEmpty(userIdValue))
-            {
-                return RedirectToAction("Login", "Account");
-
-            }
-
-            int userId = int.Parse(userIdValue);
 
             var eventDto = new EventDto
             {
@@ -131,6 +138,11 @@ namespace Web.Controllers
             }
             catch (InvalidOperationException exception)
             {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
                 ModelState.AddModelError(string.Empty, exception.Message);
 
                 return View("EventForm", model);
@@ -176,8 +188,17 @@ namespace Web.Controllers
                 return NotFound();
             }
 
+            if (_eventService.UserHasEventWithTitle(eventEntity.CreatedByUserId, model.Title, eventEntity.EventId))
+            {
+                ModelState.AddModelError("Title", "Bu isimde bir etkinliğiniz zaten var. Lütfen başlığı değiştirin.");
+
+                return View("EventForm", model);
+            }
+
             string imagePath = eventEntity.ImagePath;
             string oldImagePath = eventEntity.ImagePath;
+
+            string? newFilePath = null;
 
             if (model.Image is not null)
             {
@@ -210,26 +231,15 @@ namespace Web.Controllers
 
                 Directory.CreateDirectory(uploadFolder);
 
-                string filePath = Path.Combine(uploadFolder, fileName);
+                newFilePath = Path.Combine(uploadFolder, fileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(newFilePath, FileMode.Create))
                 {
                     await model.Image.CopyToAsync(stream);
                 }
 
                 imagePath = "/images/events/" + fileName;
 
-                if (!string.IsNullOrEmpty(oldImagePath))
-                {
-                    string relativeOldPath = oldImagePath.TrimStart('/');
-
-                    string fullOldPath = Path.Combine(_environment.WebRootPath, relativeOldPath.Replace('/', Path.DirectorySeparatorChar));
-
-                    if (System.IO.File.Exists(fullOldPath))
-                    {
-                        System.IO.File.Delete(fullOldPath);
-                    }
-                }
             }
 
             var updatedEvent = new Entities.Models.Event
@@ -250,11 +260,28 @@ namespace Web.Controllers
             {
                 _eventService.UpdateEvent(updatedEvent);
 
+                if (model.Image is not null && !string.IsNullOrEmpty(oldImagePath))
+                {
+                    string relativeOldPath = oldImagePath.TrimStart('/');
+
+                    string fullOldPath = Path.Combine(_environment.WebRootPath, relativeOldPath.Replace('/', Path.DirectorySeparatorChar));
+
+                    if (System.IO.File.Exists(fullOldPath))
+                    {
+                        System.IO.File.Delete(fullOldPath);
+                    }
+                }
+
                 return RedirectToAction("Index");
             }
 
             catch (InvalidOperationException exception)
             {
+                if (!string.IsNullOrEmpty(newFilePath) && System.IO.File.Exists(newFilePath))
+                {
+                    System.IO.File.Delete(newFilePath);
+                }
+
                 ModelState.AddModelError(string.Empty, exception.Message);
 
                 return View("EventForm", model);

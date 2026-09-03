@@ -40,7 +40,7 @@ namespace Web.Controllers
             }
             catch (InvalidOperationException exception)
             {
-                ModelState.AddModelError("Email", exception.Message);
+                ModelState.AddModelError(string.Empty, exception.Message);
 
                 return View(registerDto);
             }
@@ -173,7 +173,7 @@ namespace Web.Controllers
 
             catch (InvalidOperationException exception)
             {
-                ModelState.AddModelError("Email", exception.Message);
+                ModelState.AddModelError(string.Empty, exception.Message);
 
                 return View(profileDto);
             }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models
 {
-    public class EventFormViewModel
+    public class EventFormViewModel : IValidatableObject
     {
         public int EventId { get; set; }
 
@@ -26,5 +26,18 @@ namespace Web.Models
         public string LongDescription { get; set; } = string.Empty;
 
         public bool IsActive { get; set; } = true;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var errors = new List<ValidationResult>();
+
+            if (EndDateTime <= StartDateTime)
+            {
+                errors.Add(new ValidationResult("Etkinlik bitiş tarihi başlangıç tarihinden sonra olmalıdır!",
+                 new[] { nameof(EndDateTime) }));
+            }
+
+            return errors;
+        }
     }
 }

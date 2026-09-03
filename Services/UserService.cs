@@ -66,6 +66,12 @@ namespace Services
 
         public void RegisterUser(RegisterDto registerDto)
         {
+            if (registerDto.BirthDate > DateTime.Today)
+            {
+                throw new InvalidOperationException("Doğum tarihi bugünden ileri bir tarih olamaz!");
+            }
+
+
             if (EmailExists(registerDto.Email))
             {
                 throw new InvalidOperationException("Bu e-posta adresi başka bir kullanıcı tarafından kullanılmaktadır.");
@@ -106,9 +112,14 @@ namespace Services
 
         public void UpdateProfile(UserProfileDto profileDto)
         {
-            var user=GetUserById(profileDto.UserId,true);
+            if (profileDto.BirthDate > DateTime.Today)
+            {
+                throw new InvalidOperationException("Doğum tarihi bugünden ileri bir tarih olamaz!");
+            }
 
-            if(user is null)
+            var user = GetUserById(profileDto.UserId, true);
+
+            if (user is null)
             {
                 throw new InvalidOperationException("Kullanıcı bulunamadı.");
             }
@@ -118,11 +129,11 @@ namespace Services
                 throw new InvalidOperationException("Bu e-posta adresi başka bir kullanıcı tarafından kullanılmaktadır");
             }
 
-            user.FirstName=profileDto.FirstName;
-            user.LastName=profileDto.LastName;
-            user.Email=profileDto.Email;
-            user.BirthDate=profileDto.BirthDate;
-            user.EncryptedPassword=_encryptionService.Encrypt(profileDto.Password);
+            user.FirstName = profileDto.FirstName;
+            user.LastName = profileDto.LastName;
+            user.Email = profileDto.Email;
+            user.BirthDate = profileDto.BirthDate;
+            user.EncryptedPassword = _encryptionService.Encrypt(profileDto.Password);
 
             _repositoryManager.Save();
         }
