@@ -24,8 +24,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="PublicEvent"
-                               asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link text-dark" asp-controller="PublicEvent" asp-action="Index">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="PublicEvent" asp-action="Calendar">Takvim</a>
@@ -34,56 +33,62 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Event" asp-action="Index">Etkinlik Yönetimi</a>
-                            </li>
-                            
-                            <li class="nav-item">
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile">Profil</a>
-                            </li>
+                                </li>
                             }
                         </ul>
 
                         <ul class="navbar-nav">
                             @if (User.Identity?.IsAuthenticated == true)
                             {
-                                <li class="nav-item d-flex align-items-center me-3">
-                                    <span class="navbar-text user-name">@User.Identity.Name</span>
-                                </li>
                                 <li class="nav-item">
-                                    <form asp-controller="Account" asp-action="Logout" method="post">
-                                        <button type="submit" class="btn btn-link nav-link logout-link">Çıkış Yap</button>
-                                    </form>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
-                                </li>
-                            }
-                        </ul>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="navbar-text user-name">@User.Identity?.Name</span>
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <span class="navbar-text admin-text">Yönetici</span>
+                                        }
+
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                            <button type="submit" class="btn btn-link nav-link logout-link p-0">Çıkış Yap</button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                }
+                        else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </nav>
-        </header>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+                </nav>
+            </header>
 
-        <footer class="border-top footer text-muted">
             <div class="container">
-                &copy; 2026 Etkinlik Yönetim Uygulaması
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
             </div>
-        </footer>
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
+            <footer class="border-top footer text-muted">
+                <div class="container">
+                    &copy; 2026 Etkinlik Yönetim Uygulaması
+                </div>
+            </footer>
 
-</html>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @await RenderSectionAsync("Scripts", required: false)
+        </body>
+
+    </html>

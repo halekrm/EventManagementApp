@@ -1,15 +1,31 @@
+@using System.Security.Claims
 @model IEnumerable<Entities.Models.Event>
 
 @{
     ViewData["Title"] = "Etkinlik Yönetimi";
+
+    var currentUserIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    var currentUserId = string.IsNullOrEmpty(currentUserIdValue)
+        ? (int?)null
+        : int.Parse(currentUserIdValue);
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="mb-1">Etkinlik Yönetimi</h2>
-        <p class="text-muted mb-0">
-            Oluşturulan etkinlikleri görüntüleyebilir,düzenleyebilir veya silebilirsiniz.
-        </p>
+        @if (User.IsInRole("Admin"))
+        {
+            <p class="text-muted mb-0">
+                Tüm etkinlikleri görüntüleyebilir, düzenleyebilir veya silebilirsiniz.
+            </p>
+        }
+        else
+        {
+            <p class="text-muted mb-0">
+                Kayıtlı etkinlikleri görüntüleyebilir, kendi etkinliklerinizi düzenleyebilir veya silebilirsiniz.
+            </p>
+        }
     </div>
 
     <a asp-action="Create" class="btn btn-primary">Yeni Etkinlik Oluştur</a>
@@ -42,15 +58,27 @@
                 <tbody>
                     @foreach (var eventEntity in Model)
                     {
+                        bool canManage = User.IsInRole("Admin") ||
+                        (currentUserId.HasValue && eventEntity.CreatedByUserId == currentUserId.Value);
+
                         <tr>
                             <td><img src="@eventEntity.ImagePath" alt="@eventEntity.Title" class="rounded"
                                          style="width:90px; height:60px; object-fit:cover;" /></td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@eventEntity.EventId"
-                                       class="text-decoration-none fw-semibold event-title-link">
-                                        @eventEntity.Title
-                                    </a>
+                                    @if (canManage)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@eventEntity.EventId"
+                                           class="text-decoration-none fw-semibold event-title-link">
+                                            @eventEntity.Title
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="fw-semibold">@eventEntity.Title</span>
+                                    }
+
                                 </td>
+
                                 <td>@eventEntity.StartDateTime.ToString("dd.MM.yyyy HH:mm")</td>
                                 <td>@eventEntity.EndDateTime.ToString("dd.MM.yyyy HH:mm")</td>
                                 <td>@eventEntity.CreatedByUser.FirstName @eventEntity.CreatedByUser.LastName</td>
@@ -66,13 +94,22 @@
                                     }
                                 </td>
                                 <td class="text-nowrap">
-                                    <a asp-action="Edit" asp-route-id="@eventEntity.EventId"
-                                       class="btn btn-edit btn-sm me-1">Düzenle</a>
-                                    <form asp-action="Delete" asp-route-id="@eventEntity.EventId" method="post" class="d-inline"
-                                          onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
+                                    @if (canManage)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@eventEntity.EventId"
+                                           class="btn btn-edit btn-sm me-1">Düzenle</a>
 
-                                        <button type="submit" class="btn btn-delete btn-sm">Sil</button>
-                                    </form>
+                                        <form asp-action="Delete" asp-route-id="@eventEntity.EventId" method="post" class="d-inline"
+                                              onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
+
+                                            <button type="submit" class="btn btn-delete btn-sm">Sil</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">İşlem Yapılamaz</span>
+                                    }
+
                                 </td>
                             </tr>
                         }

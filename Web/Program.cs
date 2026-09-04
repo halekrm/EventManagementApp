@@ -8,7 +8,7 @@ builder.Services.ConfigureServiceRegistration(builder.Configuration);
 builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options =>
 {
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 builder.Services.AddControllersWithViews();
 

@@ -15,6 +15,7 @@ public class User
     public DateTime BirthDate { get; set; }
 
     public DateTime CreatedAt { get; set; }
+    public string Role { get; set; } = "User";
 
     public ICollection<Event> Events { get; set; } = new List<Event>();
 }

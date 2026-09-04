@@ -84,7 +84,9 @@ namespace Web.Controllers
 
                 new Claim(ClaimTypes.Name,$"{user.FirstName} {user.LastName}"),
 
-                new Claim(ClaimTypes.Email,user.Email)
+                new Claim(ClaimTypes.Email,user.Email),
+
+                new Claim(ClaimTypes.Role,user.Role)
             };
 
             var identity = new ClaimsIdentity(claims, "CookieAuth");
@@ -150,13 +152,21 @@ namespace Web.Controllers
             {
                 _userService.UpdateProfile(profileDto);
 
+                var updatedUser = _userService.GetUserById(profileDto.UserId, false);
+
+                if (updatedUser is null)
+                {
+                    return RedirectToAction("Login");
+                }
+
                 var claims = new List<Claim>
                     {
-                      new Claim(ClaimTypes.NameIdentifier,profileDto.UserId.ToString()),
+                      new Claim(ClaimTypes.NameIdentifier,updatedUser.UserId.ToString()),
 
-                      new Claim(ClaimTypes.Name,$"{profileDto.FirstName} {profileDto.LastName}"),
+                      new Claim(ClaimTypes.Name,$"{updatedUser.FirstName} {updatedUser.LastName}"),
 
-                      new Claim(ClaimTypes.Email,profileDto.Email)
+                      new Claim(ClaimTypes.Email,updatedUser.Email),
+                      new Claim(ClaimTypes.Role,updatedUser.Role)
                      };
 
                 var identity = new ClaimsIdentity(claims, "CookieAuth");
@@ -177,6 +187,11 @@ namespace Web.Controllers
 
                 return View(profileDto);
             }
+        }
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

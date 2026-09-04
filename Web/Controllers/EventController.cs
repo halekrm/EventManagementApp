@@ -18,11 +18,31 @@ namespace Web.Controllers
             _environment = environment;
         }
 
+        private int? GetCurrentUserId()
+        {
+            string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdValue))
+            {
+                return null;
+            }
+
+            return int.Parse(userIdValue);
+        }
+
+        private bool CanManageEvent(Entities.Models.Event eventEntity)
+        {
+            int? currentUserId = GetCurrentUserId();
+
+            return User.IsInRole("Admin") ||
+            (currentUserId.HasValue && eventEntity.CreatedByUserId == currentUserId.Value);
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
             var events = _eventService.GetAllEvents(false);
-
+            
             return View(events);
         }
 
@@ -159,6 +179,11 @@ namespace Web.Controllers
                 return NotFound();
             }
 
+            if (!CanManageEvent(eventEntity))
+            {
+                return Forbid();
+            }
+
             var model = new EventFormViewModel
             {
                 EventId = eventEntity.EventId,
@@ -186,6 +211,11 @@ namespace Web.Controllers
             if (eventEntity is null)
             {
                 return NotFound();
+            }
+
+            if (!CanManageEvent(eventEntity))
+            {
+                return Forbid();
             }
 
             if (_eventService.UserHasEventWithTitle(eventEntity.CreatedByUserId, model.Title, eventEntity.EventId))
@@ -296,6 +326,11 @@ namespace Web.Controllers
             if (eventEntity is null)
             {
                 return NotFound();
+            }
+
+            if (!CanManageEvent(eventEntity))
+            {
+                return Forbid();
             }
 
             string imagePath = eventEntity.ImagePath;

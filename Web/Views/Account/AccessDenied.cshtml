@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Erişim Reddedildi";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 180px);">
+    <div class="card shadow-sm border-0 access-denied-card">
+        <div class="card-body p-4 text-center">
+            <h2 class="mb-3">Erişim Reddedildi</h2>
+            <p class="text-muted mb-4">Bu etkinlik üzerinde işlem yapma yetkiniz bulunmamaktadır.</p>
+            <a asp-controller="Event" asp-action="Index" class="btn btn-primary">Etkinlik Yönetimine Dön</a>
+        </div>
+    </div>
+</div>

@@ -34,6 +34,11 @@ namespace Repositories.Config
                 .HasColumnType("date")
                 .IsRequired();
 
+            builder.Property(x => x.Role)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasDefaultValue("User");
+
             builder.Property(x => x.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
         }
