@@ -23,6 +23,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterDto registerDto)
         {
             if (!ModelState.IsValid)
@@ -53,6 +54,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             if (!ModelState.IsValid)
@@ -99,6 +101,7 @@ namespace Web.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("CookieAuth");
@@ -141,6 +144,7 @@ namespace Web.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "CookieAuth")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(UserProfileDto profileDto)
         {
             if (!ModelState.IsValid)

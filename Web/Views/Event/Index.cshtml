@@ -99,11 +99,9 @@
                                         <a asp-action="Edit" asp-route-id="@eventEntity.EventId"
                                            class="btn btn-edit btn-sm me-1">Düzenle</a>
 
-                                        <form asp-action="Delete" asp-route-id="@eventEntity.EventId" method="post" class="d-inline"
-                                              onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
-
-                                            <button type="submit" class="btn btn-delete btn-sm">Sil</button>
-                                        </form>
+                                        <button type="button" class="btn btn-delete btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal-@eventEntity.EventId">Sil
+                                        </button>
                                     }
                                     else
                                     {
@@ -118,3 +116,34 @@
             </div>
         </div>
     </div>
+
+@foreach (var eventEntity in Model)
+{
+    bool canManage = User.IsInRole("Admin") || (currentUserId.HasValue && eventEntity.CreatedByUserId == currentUserId.Value);
+
+    if (canManage)
+    {
+        <div class="modal fade" id="deleteModal-@eventEntity.EventId" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content delete-modal">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title">Etkinliği Sil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="fw-semibold mb-2">@eventEntity.Title</p>
+                        <p class="text-muted mb-0">Bu etkinliği silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+                    </div>
+
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                        <form asp-action="Delete" asp-route-id="@eventEntity.EventId" method="post" class="m-0">
+                            <button type="submit" class="btn delete-modal-button">Sil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

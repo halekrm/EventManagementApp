@@ -70,6 +70,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EventFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -199,6 +200,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EventFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -319,6 +321,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var eventEntity = _eventService.GetEventById(id, false);
