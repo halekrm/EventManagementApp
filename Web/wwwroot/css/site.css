@@ -392,3 +392,12 @@ body {
   border-radius: 10px;
   flex-shrink: 0;
 }
+
+.auth-card a {
+  color: #5f9f76;
+  font-weight: 500;
+}
+
+.auth-card a:hover {
+  color: #5f9f76;
+}

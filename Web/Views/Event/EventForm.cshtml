@@ -83,10 +83,9 @@
                 {
                     <hr class="my-4" />
 
-                    <form asp-action="Delete" asp-route-id="@Model.EventId" method="post"
-                          onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
-                        <button type="submit" class="btn btn-delete">Etkinliği Sil</button>
-                    </form>
+                    <button type="button" class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+                        Etkinliği Sil
+                    </button>
                 }
 
             </div>
@@ -94,10 +93,36 @@
     </div>
 </div>
 
+@if (isEdit)
+{
+    <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content delete-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Etkinliği Sil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="fw-semibold mb-2">@Model.Title</p>
+                    <p class="text-muted mb-0">Bu etkinliği silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                    <form asp-action="Delete" asp-route-id="@Model.EventId" method="post" class="m-0">
+                        <button type="submit" class="btn delete-modal-button">Sil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
     <script>ClassicEditor
         .create(document.querySelector('#LongDescription'))
