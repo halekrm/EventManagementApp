@@ -8,6 +8,17 @@ html {
   }
 }
 
+@media (max-width: 576px) {
+  .fc .fc-event {
+    font-size: 0.7rem;
+    padding: 2px 3px;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.1rem;
+  }
+}
+
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
