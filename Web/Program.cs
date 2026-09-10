@@ -1,3 +1,6 @@
+using Repositories;
+using Services.Contracts;
+using Web.Infrastructure;
 using Web.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,16 @@ builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<RepositoryContext>();
+    var encryptionService = services.GetRequiredService<IEncryptionService>();
+
+    SeedData.Initialize(context, encryptionService);
+}
 
 if (!app.Environment.IsDevelopment())
 {
